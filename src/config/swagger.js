@@ -46,6 +46,54 @@ const options = {
             roleId: { type: "string", example: "user" },
           },
         },
+        Product: {
+          type: "object",
+          required: ["name", "description", "price", "stock"],
+          properties: {
+            _id: {
+              type: "string",
+              example: "65f123abc123",
+            },
+            name: {
+              type: "string",
+              example: "Nike Shoes",
+            },
+            description: {
+              type: "string",
+              example: "Running shoes",
+            },
+            price: {
+              type: "number",
+              minimum: 0,
+              example: 2999,
+            },
+            stock: {
+              type: "number",
+              minimum: 0,
+              example: 10,
+            },
+            category: {
+              type: "string",
+              example: "Footwear",
+            },
+            image: {
+              type: "string",
+              example: "https://example.com/image.jpg",
+            },
+            isActive: {
+              type: "boolean",
+              example: true,
+            },
+            createdAt: {
+              type: "string",
+              format: "date-time",
+            },
+            updatedAt: {
+              type: "string",
+              format: "date-time",
+            },
+          },
+        },
         Profile: {
           type: "object",
           properties: {
@@ -144,6 +192,7 @@ const options = {
             },
           },
         },
+
         AuthResponse: {
           type: "object",
           properties: {

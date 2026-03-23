@@ -4,7 +4,7 @@ const productController = require("../controllers/productController");
 
 /**
  * @swagger
- * /createproduct:
+ * /products/createproduct:
  *   post:
  *     summary: Create a new product
  *     tags: [Products]
