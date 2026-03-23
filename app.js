@@ -47,6 +47,7 @@ app.use(
 app.use("/", healthRoutes);
 app.use("/users", userRoutes);
 app.use("/profiles", profileRoutes);
+app.use("/products", productRoutes);
 app.set('trust proxy', 1);
 
 // connect database
