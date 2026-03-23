@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const productController = require("../controllers/productController");
+const { protect } = require("../middlewares/authMiddleware");
 
 /**
  * @swagger
@@ -24,6 +25,6 @@ const productController = require("../controllers/productController");
  *       400:
  *         description: Bad request
  */
-router.post("/createproduct", productController.createProduct);
+router.post("/createproduct", protect, productController.createProduct);
 
 module.exports = router;

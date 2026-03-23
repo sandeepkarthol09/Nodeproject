@@ -3,7 +3,7 @@
 const Product = require("../model/Product");
 
 exports.createProduct = async (data) => {
-  const { name, description, price, stock, category, image } = data;
+  const { name, description, price, stock, category, image  , createdBy} = data;
 
   // Basic validation
   if (!name || !description || price == null || stock == null) {
@@ -22,7 +22,8 @@ exports.createProduct = async (data) => {
     price,
     stock,
     category,
-    image
+    image,
+    createdBy
   });
 
   return product;
