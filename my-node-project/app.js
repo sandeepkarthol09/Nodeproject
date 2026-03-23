@@ -8,6 +8,7 @@ const swaggerSpec = require("./src/config/swagger");
 const healthRoutes = require("./src/routes/healthRoutes");
 const userRoutes = require("./src/routes/userRoutes");
 const profileRoutes = require("./src/routes/profileRoutes");
+const productRoutes = require("./src/routes/productRoutes");
 const logger = require("./src/middlewares/logger");
 const connectDB = require("./src/config/db");
 const errorHandler = require("./src/middlewares/errorHandler");
@@ -47,6 +48,7 @@ app.use(
 app.use("/", healthRoutes);
 app.use("/users", userRoutes);
 app.use("/profiles", profileRoutes);
+app.use("/products", productRoutes);
 app.set('trust proxy', 1);
 
 // connect database

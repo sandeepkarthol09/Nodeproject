@@ -4,6 +4,7 @@ const router = express.Router();
 const profileController = require("../controllers/profileController");
 const { protect } = require("../middlewares/authMiddleware");
 const upload = require("../middlewares/upload");
+const productRoutes = require("./productRoutes");
 
 // Apply protect to ALL routes in this router
 router.use(protect);
