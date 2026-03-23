@@ -28,3 +28,8 @@ exports.createProduct = async (data) => {
 
   return product;
 };
+
+exports.getProduct = async () => {
+  const product = await Product.find();
+  return product;
+};

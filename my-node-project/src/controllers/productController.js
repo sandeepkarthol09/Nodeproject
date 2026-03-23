@@ -10,3 +10,8 @@ exports.createProduct = asyncHandler(async (req, res) => {
   });
   return response.success(res, "Product created successfully", product);
 });
+
+exports.getProduct = asyncHandler(async (req, res) => {
+  const product = await productService.getProduct();
+  return response.success(res, "Product fetched successfully", product);
+});

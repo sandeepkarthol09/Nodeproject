@@ -6,45 +6,45 @@ const productSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "Product name is required"],
-      trim: true
+      trim: true,
     },
 
     description: {
       type: String,
-      required: [true, "Description is required"]
+      required: [true, "Description is required"],
     },
 
     price: {
       type: Number,
       required: true,
-      min: 0
+      min: 0,
     },
 
     stock: {
       type: Number,
       required: true,
-      min: 0
+      min: 0,
     },
 
     category: {
-      type: String
+      type: String,
     },
 
     image: {
-      type: String
+      type: String,
     },
 
     isActive: {
       type: Boolean,
-      default: true
+      default: true,
     },
-     createdBy: {
+    createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Product", productSchema);

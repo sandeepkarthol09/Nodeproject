@@ -27,4 +27,23 @@ const { protect } = require("../middlewares/authMiddleware");
  */
 router.post("/createproduct", protect, productController.createProduct);
 
+/**
+ * @swagger
+ * /products/getproduct:
+ *   get:
+ *     summary: Get all products
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: Product fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Bad request
+ */
+router.get("/getproduct", protect, productController.getProduct);
+
+
 module.exports = router;
