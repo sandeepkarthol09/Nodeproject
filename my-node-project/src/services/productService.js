@@ -55,3 +55,14 @@ exports.deleteProduct = async (id) => {
   }
   return product;
 };
+
+exports.updateProduct = async (id, data) => {
+  const product = await Product.findByIdAndUpdate(id, data, {
+    new: true,
+    runValidators: true,
+  });
+  if (!product) {
+    throw new Error("Product not found");
+  }
+  return product;
+};

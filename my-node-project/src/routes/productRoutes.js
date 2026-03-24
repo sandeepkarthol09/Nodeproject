@@ -97,4 +97,35 @@ router.get("/getproduct", protect, productController.getProduct);
  */
 router.delete("/deleteproduct/:id", protect, productController.deleteProduct);
 
+/**
+ * @swagger
+ * /products/updateproduct/{id}:
+ *   put:
+ *     summary: Update a product by ID
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The product ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Product'
+ *     responses:
+ *       200:
+ *         description: Product updated successfully
+ *       404:
+ *         description: Product not found
+ *       400:
+ *         description: Bad request
+ */
+router.put("/updateproduct/:id", protect, productController.updateProduct);
+
 module.exports = router;
