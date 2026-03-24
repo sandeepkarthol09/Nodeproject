@@ -11,7 +11,9 @@ const profileRoutes = require("./src/routes/profileRoutes");
 const productRoutes = require("./src/routes/productRoutes");
 const logger = require("./src/middlewares/logger");
 const connectDB = require("./src/config/db");
+const orderRoutes = require("./src/routes/orderRoutes");
 const errorHandler = require("./src/middlewares/errorHandler");
+
 
 const app = express();
 const PORT = process.env.PORT;
@@ -49,6 +51,8 @@ app.use("/", healthRoutes);
 app.use("/users", userRoutes);
 app.use("/profiles", profileRoutes);
 app.use("/products", productRoutes);
+app.use("/orders", orderRoutes);
+
 app.set('trust proxy', 1);
 
 // connect database
