@@ -55,3 +55,13 @@ exports.createOrder = async (orderData, user) => {
 
   return order;
 };
+
+exports.getOrder = async (user) => {
+  const orders = await Order.find({ user: user.id })
+    .populate("user", "name email")
+    .populate("products.product", "name price")
+    .sort({ createdAt: -1 });
+
+  return orders;
+};
+

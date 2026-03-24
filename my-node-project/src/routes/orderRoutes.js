@@ -55,4 +55,31 @@ const { protect } = require("../middlewares/authMiddleware");
  */
 router.post("/createorder", protect,  orderController.createOrder);
 
+/**
+ * @swagger
+ * /orders/getorder:
+ *   get:
+ *     summary: Get all orders
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Orders fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Order'
+ */
+router.get("/getorder", protect,  orderController.getOrder);
+
 module.exports = router;
