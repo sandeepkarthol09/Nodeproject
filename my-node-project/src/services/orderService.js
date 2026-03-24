@@ -56,12 +56,47 @@ exports.createOrder = async (orderData, user) => {
   return order;
 };
 
-exports.getOrder = async (user) => {
-  const orders = await Order.find({ user: user.id })
-    .populate("user", "name email")
-    .populate("products.product", "name price")
-    .sort({ createdAt: -1 });
+exports.getOrder = async (user, { page = 1, limit = 10 } = {}) => {
+  const skip = (page - 1) * limit;
 
-  return orders;
+  const filter = { user: user.id };
+
+  const [orders, total] = await Promise.all([
+    Order.find(filter)
+      .populate("user", "name email")
+      .populate("products.product", "name price")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+
+    Order.countDocuments(filter),
+  ]);
+
+  return {
+    orders,
+    _meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+exports.deleteOrder = async (id) => {
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new Error("Order not found");
+  }
+
+  // Restore stock for each product in the order
+  for (const item of order.products) {
+    await Product.findByIdAndUpdate(item.product, {
+      $inc: { stock: item.quantity }
+    });
+  }
+
+  await Order.findByIdAndDelete(id);
+  return order;
 };
 

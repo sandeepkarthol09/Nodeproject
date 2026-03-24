@@ -10,7 +10,17 @@ exports.createOrder = asyncHandler(async (req, res) => {
 });
 
 exports.getOrder = asyncHandler(async (req, res) => {
-  const orders = await orderService.getOrder(req.user);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
 
-  return responseHandler.success(res, "Order fetched successfully", orders);
+  const result = await orderService.getOrder(req.user, { page, limit });
+
+  return responseHandler.success(res, "Order fetched successfully", result);
+});
+
+exports.deleteOrder = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const order = await orderService.deleteOrder(id);
+
+  return responseHandler.success(res, "Order deleted successfully", order);
 });
