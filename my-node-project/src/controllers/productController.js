@@ -12,6 +12,16 @@ exports.createProduct = asyncHandler(async (req, res) => {
 });
 
 exports.getProduct = asyncHandler(async (req, res) => {
-  const product = await productService.getProduct();
-  return response.success(res, "Product fetched successfully", product);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
+  const result = await productService.getProduct({ page, limit });
+
+  return response.success(res, "Product fetched successfully", result);
+});
+
+exports.deleteProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const product = await productService.deleteProduct(id);
+  return response.success(res, "Product deleted successfully", product);
 });
