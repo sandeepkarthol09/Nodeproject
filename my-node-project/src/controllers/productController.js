@@ -10,3 +10,24 @@ exports.createProduct = asyncHandler(async (req, res) => {
   });
   return response.success(res, "Product created successfully", product);
 });
+
+exports.getProduct = asyncHandler(async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
+  const result = await productService.getProduct({ page, limit });
+
+  return response.success(res, "Product fetched successfully", result);
+});
+
+exports.deleteProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const product = await productService.deleteProduct(id);
+  return response.success(res, "Product deleted successfully", product);
+});
+
+exports.updateProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const product = await productService.updateProduct(id, req.body);
+  return response.success(res, "Product updated successfully", product);
+});
