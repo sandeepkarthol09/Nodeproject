@@ -56,31 +56,44 @@ exports.createOrder = async (orderData, user) => {
   return order;
 };
 
-exports.getOrder = async (user, { page = 1, limit = 10 } = {}) => {
+exports.getOrder = async (user, { page, limit }) => {
   const skip = (page - 1) * limit;
 
-  const filter = { user: user.id };
+  const orders = await Order.aggregate([
+    {
+      $match: { user: user._id },
+    },
 
-  const [orders, total] = await Promise.all([
-    Order.find(filter)
-      .populate("user", "name email")
-      .populate("products.product", "name price")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit),
+    { $unwind: "$products" },
 
-    Order.countDocuments(filter),
+    {
+      $lookup: {
+        from: "products",
+        localField: "products.product",
+        foreignField: "_id",
+        as: "productInfo",
+      },
+    },
+
+    { $unwind: "$productInfo" },
+
+    {
+      $project: {
+        _id: 1,
+        status: 1,
+        totalAmount: 1,
+        quantity: "$products.quantity",
+        productName: "$productInfo.name",
+        price: "$productInfo.price",
+        createdAt: 1,
+      },
+    },
+
+    { $skip: skip },
+    { $limit: limit },
   ]);
 
-  return {
-    orders,
-    _meta: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
+  return orders;
 };
 
 exports.deleteOrder = async (id) => {
@@ -101,22 +114,43 @@ exports.deleteOrder = async (id) => {
 };
 
 exports.getDashboardStats = async () => {
-  const result = await Order.aggregate([
-    { $match: { status: "completed" } },
-
+  const stats = await Order.aggregate([
     {
       $facet: {
-        totalStats: [
+        // ✅ Total Revenue
+        revenue: [
+          { $match: { status: "completed" } },
           {
             $group: {
               _id: null,
               totalRevenue: { $sum: "$totalAmount" },
-              totalOrders: { $sum: 1 },
             },
           },
         ],
 
+        // ✅ Total Orders
+        totalOrders: [
+          {
+            $group: {
+              _id: null,
+              count: { $sum: 1 },
+            },
+          },
+        ],
+
+        // ✅ Orders by Status
+        statusStats: [
+          {
+            $group: {
+              _id: "$status",
+              count: { $sum: 1 },
+            },
+          },
+        ],
+
+        // ✅ Top Selling Products
         topProducts: [
+          { $match: { status: "completed" } },
           { $unwind: "$products" },
           {
             $group: {
@@ -127,43 +161,32 @@ exports.getDashboardStats = async () => {
           { $sort: { totalSold: -1 } },
           { $limit: 5 },
 
-          // join with product
           {
             $lookup: {
               from: "products",
               localField: "_id",
               foreignField: "_id",
-              as: "product",
+              as: "productInfo",
             },
           },
-          { $unwind: "$product" },
+          { $unwind: "$productInfo" },
 
           {
             $project: {
-              name: "$product.name",
+              name: "$productInfo.name",
               totalSold: 1,
             },
           },
-        ],
-
-        dailySales: [
-          {
-            $group: {
-              _id: {
-                $dateToString: {
-                  format: "%Y-%m-%d",
-                  date: "$createdAt",
-                },
-              },
-              revenue: { $sum: "$totalAmount" },
-            },
-          },
-          { $sort: { _id: 1 } },
         ],
       },
     },
   ]);
 
-  return result[0];
+  return {
+    revenue: stats[0].revenue[0]?.totalRevenue || 0,
+    totalOrders: stats[0].totalOrders[0]?.count || 0,
+    statusStats: stats[0].statusStats,
+    topProducts: stats[0].topProducts,
+  };
 };
 
