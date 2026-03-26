@@ -14,7 +14,6 @@ const connectDB = require("./src/config/db");
 const orderRoutes = require("./src/routes/orderRoutes");
 const errorHandler = require("./src/middlewares/errorHandler");
 
-
 const app = express();
 const PORT = process.env.PORT;
 

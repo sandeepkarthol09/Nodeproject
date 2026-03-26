@@ -100,3 +100,70 @@ exports.deleteOrder = async (id) => {
   return order;
 };
 
+exports.getDashboardStats = async () => {
+  const result = await Order.aggregate([
+    { $match: { status: "completed" } },
+
+    {
+      $facet: {
+        totalStats: [
+          {
+            $group: {
+              _id: null,
+              totalRevenue: { $sum: "$totalAmount" },
+              totalOrders: { $sum: 1 },
+            },
+          },
+        ],
+
+        topProducts: [
+          { $unwind: "$products" },
+          {
+            $group: {
+              _id: "$products.product",
+              totalSold: { $sum: "$products.quantity" },
+            },
+          },
+          { $sort: { totalSold: -1 } },
+          { $limit: 5 },
+
+          // join with product
+          {
+            $lookup: {
+              from: "products",
+              localField: "_id",
+              foreignField: "_id",
+              as: "product",
+            },
+          },
+          { $unwind: "$product" },
+
+          {
+            $project: {
+              name: "$product.name",
+              totalSold: 1,
+            },
+          },
+        ],
+
+        dailySales: [
+          {
+            $group: {
+              _id: {
+                $dateToString: {
+                  format: "%Y-%m-%d",
+                  date: "$createdAt",
+                },
+              },
+              revenue: { $sum: "$totalAmount" },
+            },
+          },
+          { $sort: { _id: 1 } },
+        ],
+      },
+    },
+  ]);
+
+  return result[0];
+};
+

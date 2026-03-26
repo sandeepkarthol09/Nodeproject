@@ -24,3 +24,14 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
 
   return responseHandler.success(res, "Order deleted successfully", order);
 });
+
+
+exports.getDashboard = asyncHandler(async (req, res) => {
+  const data = await orderService.getDashboardStats();
+
+  return responseHandler.success(
+    res,
+    "Dashboard data fetched",
+    data
+  );
+});

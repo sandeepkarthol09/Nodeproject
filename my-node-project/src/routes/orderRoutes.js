@@ -136,4 +136,51 @@ router.get("/getorder", protect,  orderController.getOrder);
  */
 router.delete("/deleteorder/:id", protect, orderController.deleteOrder);
 
+/**
+ * @swagger
+ * /orders/dashboard:
+ *   get:
+ *     summary: Get dashboard statistics
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Dashboard data fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 totalStats:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       totalRevenue:
+ *                         type: number
+ *                       totalOrders:
+ *                         type: number
+ *                 topProducts:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *                       totalSold:
+ *                         type: number
+ *                 dailySales:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: "2026-03-25"
+ *                       revenue:
+ *                         type: number
+ */
+router.get("/dashboard", protect, orderController.getDashboard);
+
 module.exports = router;
