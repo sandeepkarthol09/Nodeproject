@@ -52,7 +52,7 @@ app.use("/profiles", profileRoutes);
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
 
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 
 // connect database
 connectDB();
@@ -76,4 +76,3 @@ const startServer = (port) => {
 };
 
 startServer(PORT);
-

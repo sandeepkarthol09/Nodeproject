@@ -43,7 +43,11 @@ const options = {
               enum: ["male", "female", "other"],
               example: "male",
             },
-            roleId: { type: "string", example: "user" },
+            role: { 
+              type: "string", 
+              enum: ["admin", "manager", "employee"],
+              example: "employee" 
+            },
           },
         },
         Product: {
@@ -148,7 +152,11 @@ const options = {
               enum: ["male", "female", "other"],
               example: "male",
             },
-            roleId: { type: "string", example: "user" },
+            role: { 
+              type: "string", 
+              enum: ["admin", "manager", "employee"],
+              example: "employee" 
+            },
           },
         },
         LoginRequest: {
@@ -214,6 +222,25 @@ const options = {
             message: { type: "string", example: "Error message" },
           },
         },
+        PaginatedUsers: {
+          type: "object",
+          properties: {
+            users: {
+              type: "array",
+              items: { $ref: "#/components/schemas/User" },
+            },
+            _meta: {
+              type: "object",
+              properties: {
+                total: { type: "integer", example: 100 },
+                page: { type: "integer", example: 1 },
+                limit: { type: "integer", example: 10 },
+                totalPages: { type: "integer", example: 10 },
+              },
+            },
+          },
+        },
+
       },
     },
     security: [{ bearerAuth: [] }],

@@ -145,9 +145,32 @@ router.post("/reset-password", validateResetPassword, userController.resetPasswo
  *           type: integer
  *           default: 10
  *         description: Items per page (admin only)
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search by name, email, or phone (admin only)
+ *       - in: query
+ *         name: role
+ *         schema:
+ *           type: string
+ *           enum: [admin, manager, employee]
+ *         description: Filter by role (admin only)
+ *       - in: query
+ *         name: gender
+ *         schema:
+ *           type: string
+ *           enum: [male, female, other]
+ *         description: Filter by gender (admin only)
+
  *     responses:
  *       200:
  *         description: User list fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaginatedUsers'
+
  *       401:
  *         description: Unauthorized
  *         content:

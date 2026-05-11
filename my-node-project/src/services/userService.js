@@ -5,17 +5,37 @@ const { generateResetToken } = require("../utils/resettoken");
 const jwt = require("jsonwebtoken");
 const { JWT_ACCESS_SECRET } = require("../config/Jwt");
 
-exports.getAllUsers = async ({ page = 1, limit = 10 } = {}) => {
+exports.getAllUsers = async ({ page = 1, limit = 10, search, role, gender } = {}) => {
+  const query = {};
+
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+      { phone: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  if (role) {
+    query.role = role;
+  }
+
+  if (gender) {
+    query.gender = gender;
+  }
+
   const skip = (page - 1) * limit;
   const [users, total] = await Promise.all([
-    User.find().skip(skip).limit(limit),
-    User.countDocuments(),
+    User.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
+    User.countDocuments(query),
   ]);
+
   return {
     users,
     _meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
   };
 };
+
 
 exports.createUser = async (data) => {
   const user = await User.create({

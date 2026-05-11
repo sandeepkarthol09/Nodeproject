@@ -44,6 +44,7 @@ exports.createOrder = async (orderData, user) => {
     orderItems.push({
       product: product._id,
       quantity: item.quantity,
+      image: product.image,
     });
   }
 
@@ -85,6 +86,7 @@ exports.getOrder = async (user, { page, limit }) => {
         quantity: "$products.quantity",
         productName: "$productInfo.name",
         price: "$productInfo.price",
+        image: "$productInfo.image",
         createdAt: 1,
       },
     },
@@ -174,6 +176,7 @@ exports.getDashboardStats = async () => {
           {
             $project: {
               name: "$productInfo.name",
+              image: "$productInfo.image", 
               totalSold: 1,
             },
           },

@@ -10,8 +10,15 @@ exports.getuserlist = asyncHandler(async (req, res) => {
   if (role === "admin") {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const { search, role: filterRole, gender } = req.query;
 
-    const result = await userService.getAllUsers({ page, limit });
+    const result = await userService.getAllUsers({
+      page,
+      limit,
+      search,
+      role: filterRole,
+      gender,
+    });
 
     return response.success(res, "User list fetched successfully", result);
   }
