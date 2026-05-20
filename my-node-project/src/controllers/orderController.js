@@ -25,6 +25,23 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
   return responseHandler.success(res, "Order deleted successfully", order);
 });
 
+exports.cancelOrder = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    const order = await orderService.cancelOrder(id);
+    return responseHandler.success(res, "Order cancelled successfully", order);
+  } catch (error) {
+    if (error.message === "Order not found") {
+      return res.status(404).json({ success: false, message: error.message });
+    }
+    if (error.message === "Order is already cancelled") {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+    throw error;
+  }
+});
+
 
 exports.getDashboard = asyncHandler(async (req, res) => {
   const data = await orderService.getDashboardStats();

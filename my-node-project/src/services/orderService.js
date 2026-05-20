@@ -115,6 +115,29 @@ exports.deleteOrder = async (id) => {
   return order;
 };
 
+exports.cancelOrder = async (id) => {
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new Error("Order not found");
+  }
+
+  if (order.status === "cancelled") {
+    throw new Error("Order is already cancelled");
+  }
+
+  // Restore stock for each product in the order
+  for (const item of order.products) {
+    await Product.findByIdAndUpdate(item.product, {
+      $inc: { stock: item.quantity }
+    });
+  }
+
+  order.status = "cancelled";
+  await order.save();
+  
+  return order;
+};
+
 exports.getDashboardStats = async () => {
   const stats = await Order.aggregate([
     {

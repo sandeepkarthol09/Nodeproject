@@ -3,18 +3,46 @@ const router = express.Router();
 const productController = require("../controllers/productController");
 const { protect } = require("../middlewares/authMiddleware");
 
+const upload = require("../middlewares/upload");
+
 /**
  * @swagger
  * /products/createproduct:
  *   post:
  *     summary: Create a new product
  *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             type: object
+ *             required:
+ *               - name
+ *               - price
+ *               - stock
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Name of the product
+ *               price:
+ *                 type: number
+ *                 description: Price of the product
+ *               stock:
+ *                 type: number
+ *                 description: Available stock
+ *               description:
+ *                 type: string
+ *                 description: Product description
+ *               category:
+ *                 type: string
+ *                 description: Category ID
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Product image to upload
  *     responses:
  *       200:
  *         description: Product created successfully
@@ -24,8 +52,10 @@ const { protect } = require("../middlewares/authMiddleware");
  *               $ref: '#/components/schemas/Product'
  *       400:
  *         description: Bad request
+ *       401:
+ *         description: Unauthorized
  */
-router.post("/createproduct", protect, productController.createProduct);
+router.post("/createproduct", protect, upload.single("image"), productController.createProduct);
 
 /**
  * @swagger

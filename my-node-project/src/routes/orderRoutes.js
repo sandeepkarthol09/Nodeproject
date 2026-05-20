@@ -159,6 +159,43 @@ router.delete("/deleteorder/:id", protect, orderController.deleteOrder);
 
 /**
  * @swagger
+ * /orders/cancelorder/{id}:
+ *   put:
+ *     summary: Cancel an order by ID (Order cancel karein)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The order ID (Jo order cancel karna hai uski ID)
+ *
+ *     responses:
+ *       200:
+ *         description: Order cancelled successfully (Order cancel ho gaya)
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: Order cancelled successfully
+ *
+ *       400:
+ *         description: Order is already cancelled (Order pehle se hi cancel hai)
+ *
+ *       404:
+ *         description: Order not found (Order nahi mila)
+ *
+ *       401:
+ *         description: Unauthorized (Login zaroori hai)
+ */
+router.put("/cancelorder/:id", protect, orderController.cancelOrder);
+
+/**
+ * @swagger
  * /orders/dashboard:
  *   get:
  *     summary: Get dashboard statistics (Dashboard ka data nikaalein)
